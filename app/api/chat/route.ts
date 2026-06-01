@@ -1,6 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-export const runtime = "edge";
 export const maxDuration = 60;
 
 const client = new Anthropic({
