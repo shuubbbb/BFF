@@ -1,5 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 
+export const runtime = "edge";
+export const maxDuration = 60;
+
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
@@ -33,7 +36,6 @@ export async function POST(request: Request) {
   return new Response(readable, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Transfer-Encoding": "chunked",
     },
   });
 }
