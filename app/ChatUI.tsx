@@ -65,8 +65,7 @@ export default function ChatPage() {
     setInput("");
     setIsLoading(true);
 
-    const assistantMessage: Message = { role: "assistant", content: "" };
-    setMessages([...nextMessages, assistantMessage]);
+    setMessages([...nextMessages, { role: "assistant", content: "" }]);
 
     try {
       const response = await fetch("/api/chat", {
@@ -79,20 +78,19 @@ export default function ChatPage() {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
+      let fullText = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const text = decoder.decode(value, { stream: true });
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            role: "assistant",
-            content: updated[updated.length - 1].content + text,
-          };
-          return updated;
-        });
+        fullText += decoder.decode(value, { stream: true });
       }
+
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = { role: "assistant", content: fullText };
+        return updated;
+      });
     } catch (err) {
       setMessages((prev) => {
         const updated = [...prev];
